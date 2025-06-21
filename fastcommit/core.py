@@ -86,6 +86,91 @@ class GitOperator:
         except subprocess.CalledProcessError:
             return ""
 
+    def get_commit_changes(self, commit_ref: str) -> List[GitChange]:
+        """获取指定commit的所有修改"""
+        if not self.is_git_repo():
+            raise RuntimeError("当前目录不是一个 Git 仓库")
+
+        changes = []
+
+        try:
+            # 获取commit的文件变更状态
+            result = subprocess.run(
+                ["git", "diff", "--name-status", f"{commit_ref}^", commit_ref],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+
+            if not result.stdout.strip():
+                return changes
+
+            # 解析文件状态
+            for line in result.stdout.strip().split("\n"):
+                if not line:
+                    continue
+
+                parts = line.split("\t")
+                if len(parts) >= 2:
+                    change_type = parts[0]
+                    file_path = parts[1]
+
+                    # 获取具体的 diff 内容
+                    diff_content = self._get_commit_file_diff(commit_ref, file_path)
+
+                    changes.append(GitChange(file_path=file_path, change_type=change_type, diff_content=diff_content))
+
+            return changes
+
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"获取commit修改失败: {e}")
+
+    def _get_commit_file_diff(self, commit_ref: str, file_path: str) -> str:
+        """获取commit中指定文件的diff内容"""
+        try:
+            result = subprocess.run(
+                ["git", "diff", f"{commit_ref}^", commit_ref, "--", file_path],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            return result.stdout
+        except subprocess.CalledProcessError:
+            return ""
+
+    def get_commit_info(self, commit_ref: str) -> Dict:
+        """获取commit基本信息"""
+        if not self.is_git_repo():
+            return {"error": "当前目录不是一个 Git 仓库"}
+
+        try:
+            # 获取commit hash
+            hash_result = subprocess.run(["git", "rev-parse", commit_ref], capture_output=True, text=True, check=True)
+            commit_hash = hash_result.stdout.strip()
+
+            # 获取commit作者
+            author_result = subprocess.run(
+                ["git", "show", "--format=%an", "--no-patch", commit_ref], capture_output=True, text=True, check=True
+            )
+            author = author_result.stdout.strip()
+
+            # 获取commit日期
+            date_result = subprocess.run(
+                ["git", "show", "--format=%ad", "--no-patch", commit_ref], capture_output=True, text=True, check=True
+            )
+            date = date_result.stdout.strip()
+
+            # 获取完整的commit消息
+            message_result = subprocess.run(
+                ["git", "show", "--format=%B", "--no-patch", commit_ref], capture_output=True, text=True, check=True
+            )
+            message = message_result.stdout.strip()
+
+            return {"hash": commit_hash, "author": author, "date": date, "message": message}
+
+        except subprocess.CalledProcessError as e:
+            return {"error": f"获取commit信息失败: {e}"}
+
 
 class AIProvider:
     """AI 服务提供者基类"""
@@ -290,3 +375,35 @@ class FastCommit:
             )
 
         return summary
+
+    def get_commit_info(self, commit_ref: str) -> Dict:
+        """获取commit信息并包含变更内容"""
+        # 获取基本commit信息
+        commit_info = self.git_operator.get_commit_info(commit_ref)
+
+        if "error" in commit_info:
+            return commit_info
+
+        # 获取变更内容
+        try:
+            changes = self.git_operator.get_commit_changes(commit_ref)
+
+            # 转换为显示格式
+            change_type_map = {"A": "新增", "M": "修改", "D": "删除", "R": "重命名"}
+            change_list = []
+            for change in changes:
+                change_list.append(
+                    {
+                        "file": change.file_path,
+                        "type": change_type_map.get(change.change_type, change.change_type),
+                        "raw_type": change.change_type,
+                    }
+                )
+
+            commit_info["changes"] = change_list
+            commit_info["change_objects"] = changes  # 保留原始对象用于AI分析
+
+            return commit_info
+
+        except Exception as e:
+            return {"error": f"获取commit变更失败: {e}"}

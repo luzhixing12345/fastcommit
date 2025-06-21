@@ -50,6 +50,8 @@ fsc config --show
 
 ## 💡 使用示例
 
+### 生成 Commit Message
+
 ```bash
 $ git add src/main.py README.md tests/
 $ fsc
@@ -72,6 +74,50 @@ feat(main): 添加用户登录功能模块
 
 是否使用此消息进行提交？ (y/n/e): y
 ✅ 提交成功!
+```
+
+### 分析历史 Commit
+
+```bash
+$ fsc see HEAD~1
+正在分析 commit HEAD~1 的修改内容...
+
+Commit: abc123def456
+作者: John Doe
+日期: 2025-01-15 10:30:00 +0800
+原始消息: feat: add user authentication
+
+修改的文件 (3 个):
+  新增: src/auth.py
+  修改: src/models.py
+  新增: tests/test_auth.py
+
+AI 生成的修改总结:
+==================================================
+## 修改概述
+此次提交引入了完整的用户认证系统，为应用程序添加了安全的用户管理功能。
+
+## 主要变更点
+1. **新增认证模块** - 创建了 src/auth.py，实现了 JWT token 生成、验证和密码哈希功能
+2. **扩展用户模型** - 在 src/models.py 中为 User 模型添加了认证相关字段
+3. **完善测试覆盖** - 添加了全面的单元测试确保认证功能的可靠性
+
+## 技术细节
+- 使用 JWT 实现无状态认证
+- 采用 SHA256 进行密码哈希
+- 添加了 24 小时的 token 过期机制
+
+## 影响分析
+这是一个关键的安全功能更新，为用户管理奠定了基础，后续可以基于此实现权限控制和会话管理。
+==================================================
+```
+
+### 使用相对位置
+
+```bash
+$ fsc see -1    # 分析上一个commit
+$ fsc see -2    # 分析上上个commit
+$ fsc see abc123 # 分析指定commit
 ```
 
 ## 配置管理
@@ -116,7 +162,10 @@ fsc config --language zh
 ```bash
 fsc --help                      # 显示帮助信息
 fsc --version                   # 显示版本信息
-fsc --status                    # 显示暂存区文件状态
+fsc status                      # 显示暂存区文件状态
+fsc see <commit>                # 总结指定commit的修改内容
+fsc see -1                      # 总结上一个commit
+fsc see abc123                  # 总结指定commit号
 fsc config                      # 交互式配置
 fsc config --show               # 显示当前配置
 fsc config --api-key KEY        # 设置 API Key
