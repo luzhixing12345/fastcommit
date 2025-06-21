@@ -196,18 +196,19 @@ def main():
         epilog="""
 示例:
   fsc                    # 生成 commit message
-  fsc --status          # 查看暂存区状态
+  fsc status            # 查看暂存区状态
   fsc config            # 配置 API
   fsc config --show     # 查看当前配置
         """,
     )
 
-    parser.add_argument("--status", "-s", action="store_true", help="显示暂存区文件状态")
-
     parser.add_argument("--version", "-v", action="store_true", help="显示版本信息")
 
     # 配置子命令
     subparsers = parser.add_subparsers(dest="command", help="可用命令")
+
+    # status 子命令
+    status_parser = subparsers.add_parser("status", help="显示暂存区文件状态")
 
     # config 子命令
     config_parser = subparsers.add_parser("config", help="配置 API 设置")
@@ -232,7 +233,7 @@ def main():
         return
 
     # 处理状态查看
-    if args.status:
+    if args.command == "status":
         show_staged_files()
         return
 
