@@ -1,3 +1,0 @@
-import fastcommit
-
-fastcommit.main()
