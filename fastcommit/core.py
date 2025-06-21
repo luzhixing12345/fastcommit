@@ -149,14 +149,14 @@ class OpenAIProvider(AIProvider):
 1. 直接返回commit message，不要任何解释、分析或额外文字
 2. 使用约定式提交规范格式：<type>(<scope>): <description>
 3. 返回内容必须是中文
-4. 如果需要, 可以包含多行描述来详细说明修改内容, 但不要超过10行, 每行使用 - 开头"""
+4. 如果修改内容较少, 直接返回commit message 即可; 如果修改内容较多, 可以包含多行描述来详细说明修改内容, 但不要超过10行, 每行使用 - 开头"""
         else:
             return """You are a professional Git Commit Message generator.
 Please strictly follow these requirements:
 1. Return ONLY the commit message, no explanations, analysis, or additional text
 2. Use conventional commit format: <type>(<scope>): <description>
 3. Return content must be in English
-4. If needed, can include multiple lines to describe changes in detail, but not more than 10 lines, each line starts with -"""
+4. If the changes are few, return the commit message directly; if the changes are many, can include multiple lines to describe changes in detail, but not more than 10 lines, each line starts with -"""
 
     def _build_prompt(self, changes: List[GitChange], language: str = "en") -> str:
         """构建发送给 AI 的提示词"""

@@ -66,6 +66,9 @@ class ConfigManager:
         print("=" * 50)
         print("首次运行需要配置 API 信息")
         print()
+        print("📖 DeepSeek API 文档: https://api-docs.deepseek.com/zh-cn/")
+        print("💡 您可以在上述链接中申请 API Key 并查看模型信息")
+        print()
 
         # 获取用户输入
         print("请输入以下信息:")
@@ -81,6 +84,7 @@ class ConfigManager:
             api_key = input("API Key (必填): ").strip()
             if not api_key:
                 print("❌ API Key 不能为空，请重新输入")
+                print("💡 请访问 https://platform.deepseek.com/api_keys 申请 API Key")
 
         # Model
         model = input(f"模型名称 (默认: deepseek-reasoner): ").strip()
