@@ -22,12 +22,46 @@ $ fsc
 ==================================================
 首次运行需要配置 API 信息
 
-📖 DeepSeek API 文档: https://api-docs.deepseek.com/zh-cn/
-📖 Qwen API 文档: https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen
-💡 您可以在上述链接中申请 API Key 并查看模型信息
+支持的 AI 服务提供商:
+1. 通义千问 (Qwen) (推荐)
+   📖 API 文档: https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen
+   💡 API Key 申请: https://bailian.console.aliyun.com/?tab=api#/api
 
+2. DeepSeek
+   📖 API 文档: https://api-docs.deepseek.com/zh-cn/
+   💡 API Key 申请: https://platform.deepseek.com/api_keys
+
+3. 自定义
+   💡 配置其他 OpenAI 兼容的 API 服务
+
+请选择服务提供商 (1-通义千问, 2-DeepSeek, 3-自定义):
+```
+
+初始化时需要您提供对应的大模型 api, 如果您之前尚未使用过可以选择 通义千问 或者 deepseek 进行注册然后申请 api
+
+- 通义千问(推荐,新用户每个模型100万免费token):
+  - API 文档: https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen
+  - API Key 申请: https://bailian.console.aliyun.com/?tab=api#/api
+- deepseek(需要充值,响应速度略慢):
+  - API 文档: https://api-docs.deepseek.com/zh-cn/
+  - API Key 申请: https://platform.deepseek.com/api_keys
+
+> 如果您使用其他家的大模型,例如claude/openai等只需要填入对应的 API Base URL, API key 即可
+
+申请完 api key 之后填入对应的 API Key 即可
+
+```bash
 请输入以下信息:
-API Base URL (默认: https://api.deepseek.com/): 
+API Base URL (默认: https://dashscope.aliyuncs.com/compatible-mode/v1/): 
+通义千问 API Key (必填): 1
+模型名称 (默认: qwen-plus): 
+语言 (默认: en): 
+
+✅ 配置已保存!
+📁 配置文件位置: /Users/kamilu/Desktop/fastcommit/fastcommit/user_config.json
+🎯 使用模型: 通义千问 (qwen-plus)
+💡 可以使用 'fsc config' 命令来更新配置
+==================================================
 ```
 
 ### 2. 使用
@@ -38,124 +72,9 @@ git add .
 
 # 2. 生成 commit message
 fsc
-
-# 3. 查看暂存区状态
-fsc --status
-
-# 4. 查看配置
-fsc config --show
 ```
 
-## 💡 使用示例
-
-### 生成 Commit Message
-
-```bash
-$ git add src/main.py README.md tests/
-$ fsc
-正在分析暂存区修改...
-
-修改的文件 (3 个):
-  新增: src/main.py
-  修改: README.md  
-  新增: tests/test_main.py
-
-生成的 Commit Message:
-==================================================
-feat(main): 添加用户登录功能模块
-
-实现了用户登录验证逻辑，包括：
-- 密码加密和安全验证
-- 会话管理和状态维护
-- 错误处理和用户提示
-==================================================
-
-是否使用此消息进行提交？ (y/n/e): y
-✅ 提交成功!
-```
-
-### 分析历史 Commit
-
-```bash
-$ fsc see HEAD~1
-正在分析 commit HEAD~1 的修改内容...
-
-Commit: abc123def456
-作者: John Doe
-日期: 2025-01-15 10:30:00 +0800
-原始消息: feat: add user authentication
-
-修改的文件 (3 个):
-  新增: src/auth.py
-  修改: src/models.py
-  新增: tests/test_auth.py
-
-AI 生成的修改总结:
-==================================================
-## 修改概述
-此次提交引入了完整的用户认证系统，为应用程序添加了安全的用户管理功能。
-
-## 主要变更点
-1. **新增认证模块** - 创建了 src/auth.py，实现了 JWT token 生成、验证和密码哈希功能
-2. **扩展用户模型** - 在 src/models.py 中为 User 模型添加了认证相关字段
-3. **完善测试覆盖** - 添加了全面的单元测试确保认证功能的可靠性
-
-## 技术细节
-- 使用 JWT 实现无状态认证
-- 采用 SHA256 进行密码哈希
-- 添加了 24 小时的 token 过期机制
-
-## 影响分析
-这是一个关键的安全功能更新，为用户管理奠定了基础，后续可以基于此实现权限控制和会话管理。
-==================================================
-```
-
-### 使用相对位置
-
-```bash
-$ fsc see -1    # 分析上一个commit
-$ fsc see -2    # 分析上上个commit
-$ fsc see abc123 # 分析指定commit
-```
-
-## 配置管理
-
-### 配置文件
-
-配置文件自动保存在 fastcommit 模块安装目录下：`fastcommit/user_config.json`
-
-```json
-{
-  "api_base": "https://api.deepseek.com/",
-  "api_key": "your_api_key_here",
-  "model": "deepseek-reasoner",
-  "language": "en"
-}
-```
-
-### 配置选项说明
-
-| 选项名     | 描述                    | 默认值                          |
-|-----------|-------------------------|--------------------------------|
-| `api_base` | API 基础 URL           | https://api.deepseek.com/      |
-| `api_key`  | API 密钥 (必填)        | 无                             |
-| `model`    | 使用的模型             | deepseek-reasoner              |
-| `language` | 提交信息语言 (zh/en)   | en                             |
-
-### 重新配置
-
-```bash
-# 交互式重新配置
-fsc config
-
-# 或单独设置某个选项
-fsc config --api-key your_new_api_key
-fsc config --api-base https://api.openai.com/v1
-fsc config --model gpt-4
-fsc config --language zh
-```
-
-## 📖 命令行选项
+其他命令行选项
 
 ```bash
 fsc --help                      # 显示帮助信息
@@ -170,6 +89,45 @@ fsc config --api-key KEY        # 设置 API Key
 fsc config --api-base URL       # 设置 API Base URL
 fsc config --model MODEL        # 设置模型
 fsc config --language LANG      # 设置语言 (zh/en)
+```
+
+## 配置管理
+
+### 配置文件
+
+配置文件自动保存在 fastcommit 模块安装目录下：`fastcommit/user_config.json`
+
+```json
+{
+    "api_base": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-xxx",
+    "model": "qwen-plus",
+    "language": "en"
+}
+```
+
+您可以通过 `fsc config` 进行修改
+
+### 配置选项说明
+
+| 选项名     | 描述                    | 默认值                          |
+|-----------|-------------------------|--------------------------------|
+| `api_base` | API 基础 URL           | https://dashscope.aliyuncs.com/compatible-mode/v1      |
+| `api_key`  | API 密钥 (必填)        | 无                             |
+| `model`    | 使用的模型             | qwen-plus              |
+| `language` | 提交信息语言 (zh/en)   | en                             |
+
+### 重新配置
+
+```bash
+# 交互式重新配置
+fsc config
+
+# 或单独设置某个选项
+fsc config --api-key your_new_api_key
+fsc config --api-base https://api.openai.com/v1
+fsc config --model gpt-4
+fsc config --language zh
 ```
 
 ## 参考

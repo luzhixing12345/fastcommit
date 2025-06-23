@@ -16,13 +16,31 @@ def show_config_help():
         """
 配置 FastCommit API：
 
+支持的服务提供商:
+- 通义千问: https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen (推荐)
+- DeepSeek: https://api-docs.deepseek.com/zh-cn/
+- 自定义: 支持任何 OpenAI 兼容的 API 服务
+
 方法1: 交互式配置 (推荐)
 fsc config
 
 方法2: 使用配置命令
-fsc config --api-key your_api_key_here
+# 通义千问配置示例 (推荐)
+fsc config --api-key your_qwen_api_key
+fsc config --api-base https://dashscope.aliyuncs.com/compatible-mode/v1/
+fsc config --model qwen-plus
+
+# DeepSeek 配置示例
+fsc config --api-key your_deepseek_api_key
 fsc config --api-base https://api.deepseek.com/
 fsc config --model deepseek-reasoner
+
+# 自定义配置示例
+fsc config --api-key your_custom_api_key
+fsc config --api-base https://your-custom-api.com/v1/
+fsc config --model your-custom-model
+
+# 通用配置
 fsc config --language en
 
 查看当前配置:
@@ -132,6 +150,9 @@ def generate_commit_message():
         # 显示暂存区修改文件
         print("正在分析暂存区修改...")
 
+        # 显示使用的模型
+        print(f"使用模型: {config.model}")
+
         # 获取并显示修改的文件
         summary = fc.get_staged_files_summary()
         if "error" in summary:
@@ -159,7 +180,11 @@ def generate_commit_message():
         # 询问是否直接提交
         while True:
             try:
-                choice = input("\n是否使用此消息进行提交？ (y/n/e): ").lower().strip()
+                choice = input("\n是否使用此消息进行提交？ (Y/n/e): ").lower().strip()
+
+                # 默认选择 yes
+                if not choice:
+                    choice = "y"
 
                 if choice == "y":
                     import subprocess
@@ -191,7 +216,7 @@ def generate_commit_message():
                         print(f"❌ 操作失败: {e}")
                     break
                 else:
-                    print("请输入 y (提交)、n (取消) 或 e (编辑)")
+                    print("请输入 Y (提交)、n (取消) 或 e (编辑)，默认为 Y")
             except KeyboardInterrupt:
                 print("\n\n👋 操作已取消")
                 return
@@ -290,6 +315,11 @@ def main():
   fsc see abc123        # 重新生成指定commit的message
   fsc config            # 配置 API
   fsc config --show     # 查看当前配置
+
+支持的 AI 服务:
+  通义千问:     https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen (推荐)
+  DeepSeek:    https://api-docs.deepseek.com/zh-cn/
+  自定义:       支持任何 OpenAI 兼容的 API 服务
         """,
         )
 
