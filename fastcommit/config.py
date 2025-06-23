@@ -154,7 +154,7 @@ class ConfigManager:
             print("支持的 AI 服务提供商:")
             print("1. 通义千问 (Qwen) (推荐)")
             print("   📖 API 文档: https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen")
-            print("   💡 API Key 申请: https://bailian.console.aliyun.com/")
+            print("   💡 API Key 申请: https://bailian.console.aliyun.com/?tab=api#/api")
             print()
             print("2. DeepSeek")
             print("   📖 API 文档: https://api-docs.deepseek.com/zh-cn/")
@@ -172,7 +172,7 @@ class ConfigManager:
                     api_base = "https://dashscope.aliyuncs.com/compatible-mode/v1/"
                     default_model = "qwen-plus"
                     provider_name = "通义千问"
-                    api_key_url = "https://bailian.console.aliyun.com/"
+                    api_key_url = "https://bailian.console.aliyun.com/?tab=api#/api"
                     print("已选择 通义千问")
                     break
                 elif provider == "2":
