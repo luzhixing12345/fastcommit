@@ -16,20 +16,18 @@ pip install fastcommit
 
 ```bash
 $ fsc
+检测到首次运行，需要配置 API 信息...
 ==================================================
 🚀 欢迎使用 FastCommit!
 ==================================================
 首次运行需要配置 API 信息
 
+📖 DeepSeek API 文档: https://api-docs.deepseek.com/zh-cn/
+📖 Qwen API 文档: https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen
+💡 您可以在上述链接中申请 API Key 并查看模型信息
+
 请输入以下信息:
 API Base URL (默认: https://api.deepseek.com/): 
-API Key (必填): sk-your-api-key-here
-模型名称 (默认: deepseek-reasoner): 
-语言 (默认: en): zh
-
-✅ 配置已保存!
-📁 配置文件位置: /path/to/python/site-packages/fastcommit/user_config.json
-==================================================
 ```
 
 ### 2. 使用

@@ -196,3 +196,4 @@ cython_debug/
 # FastCommit user configuration
 fastcommit/user_config.json
 /test.py
+*.json

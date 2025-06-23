@@ -337,9 +337,12 @@ def main():
             # 处理相对位置参数
             commit_ref = args.commit
             if commit_ref.startswith("-") and commit_ref[1:].isdigit():
-                # 将 -1, -2 转换为 HEAD~1, HEAD~2
-                num = commit_ref[1:]
-                commit_ref = f"HEAD~{num}"
+                # 将 -1, -2, -3 转换为 HEAD, HEAD~1, HEAD~2
+                num = int(commit_ref[1:])
+                if num == 1:
+                    commit_ref = "HEAD"
+                else:
+                    commit_ref = f"HEAD~{num-1}"
             show_commit_summary(commit_ref)
             return
 

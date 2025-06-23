@@ -1,6 +1,6 @@
 [project]
 name = "fastcommit"
-version = "0.0.4"
+version = "0.0.5"
 description = "AI 生成 commit message"
 authors = [
     {name = "luzhixing12345",email = "luzhixing12345@163.com"}

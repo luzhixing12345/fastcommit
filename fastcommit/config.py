@@ -68,6 +68,7 @@ class ConfigManager:
             print("首次运行需要配置 API 信息")
             print()
             print("📖 DeepSeek API 文档: https://api-docs.deepseek.com/zh-cn/")
+            print("📖 Qwen API 文档: https://help.aliyun.com/zh/model-studio/first-api-call-to-qwen")
             print("💡 您可以在上述链接中申请 API Key 并查看模型信息")
             print()
 
@@ -106,6 +107,7 @@ class ConfigManager:
                 print()
                 print("✅ 配置已保存!")
                 print(f"📁 配置文件位置: {self.config_file}")
+                print("💡 可以使用 'fsc config' 命令来更新配置")
                 print("=" * 50)
                 print()
             except Exception as e:
